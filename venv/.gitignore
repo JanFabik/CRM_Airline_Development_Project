@@ -1,0 +1,30 @@
+# Ignore .idea folder
+.idea/
+
+# Ignore Databases directory
+venv/Databases/
+
+# Ignore everything else
+*
+
+# Do not ignore .gitignore itself
+!.gitignore
+
+# Do not ignore specific files
+!constants.py
+!main.ini
+!main.py
+!settings.py
+!utils.py
+
+# Do not ignore specific directories and their contents
+!Icons/
+!Icons/**/*
+!Ui/
+!Ui/**/*
+
+# Ignore specific directories and files
+Lib/
+Scripts/
+pyvenv.cfg
+Airlines_Data_Analysis.ipynb
