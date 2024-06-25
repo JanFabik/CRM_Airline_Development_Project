@@ -42,6 +42,7 @@ def add_scrollable_frame_to_canvas(canvas):
     frame = tk.Frame(canvas)
     canvas.create_window((0, 0), window=frame, anchor="nw")
     frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
     return frame
 
 

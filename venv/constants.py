@@ -41,3 +41,14 @@ def airports_list():
     conn.close()
 
     return airports
+
+
+def aircrafts_list():
+    """Fetch s list of aircraft models from the database. Each value consists of aircraft name and aircraft code."""
+    conn = sqlite3.connect(DATABASE_PATH)
+    cur = conn.cursor()
+    cur.execute("""SELECT model || ' (' || aircraft_code || ')' as aircraft FROM aircrafts_data ORDER BY model""")
+    aircrafts = [row[0] for row in cur.fetchall()]
+    conn.close()
+
+    return aircrafts

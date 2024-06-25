@@ -314,8 +314,18 @@ class BookFlightsUI:
                                 flights.departure_airport = ?
                                 AND 
                                 flights.arrival_airport = ?
+                            GROUP BY 
+                                flights.flight_id, 
+                                flight_no, 
+                                dep_airport.airport_name, 
+                                flights.departure_airport, 
+                                arr_airport.airport_name, 
+                                flights.arrival_airport, 
+                                scheduled_departure, 
+                                scheduled_arrival, 
+                                aircrafts_data.model
                             ORDER BY 
-                                scheduled_departure;
+                                scheduled_departure
                     """,
                     (str(self.search_flights_calendar.get_date()) + '%',
                      self.origin_entry.get()[len(self.origin_entry.get()) - 4: len(self.origin_entry.get()) - 1],

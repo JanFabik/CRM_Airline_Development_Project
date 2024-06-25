@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
+from tkcalendar import Calendar
 import sqlite3
 import constants as const
 from PIL import Image, ImageTk
+from datetime import datetime
 
 
 def popup_message_1(window, message_title, message_text, button_text, image_filename, command=None):
@@ -120,20 +122,23 @@ def update_treeview(treeview, data):
 
 
 class AutofillDropdown:
-    def __init__(self, entry_parent, options_list_parent, row, column, width, options):
+    def __init__(self, entry_parent, options_list_parent, row, column, width, options, padx=None, pady=None, sticky=None):
         self.entry_parent = entry_parent
         self.options_list_parent = options_list_parent
         self.row = row
         self.column = column
         self.width = width
         self.options = options
+        self.padx = padx
+        self.pady = pady
+        self.sticky = sticky
         self.dropdown_id = None
         self.setup_widget()
 
     def setup_widget(self):
         # Create a frame for the widgets
         self.wrapper = tk.Frame(self.entry_parent)
-        self.wrapper.grid(row=self.row, column=self.column)
+        self.wrapper.grid(row=self.row, column=self.column, padx=self.padx, pady=self.pady, sticky=self.sticky)
 
         # Create a text widget for the entry field
         self.entry = tk.Entry(self.wrapper, width=self.width)
@@ -204,3 +209,65 @@ class AutofillDropdown:
     def config(self, state):
         self.entry.config(state=state)
 
+
+class TimePicker(tk.Frame):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+
+        # Variables to hold time values
+        self.hour_var = tk.StringVar(value='12')
+        self.minute_var = tk.StringVar(value='00')
+
+        # Spinbox for hours
+        self.hour_spinbox = ttk.Spinbox(self, from_=0, to=23, wrap=True, textvariable=self.hour_var, width=2, font=("Calibri", 12))
+        self.hour_spinbox.grid(row=0, column=0)
+
+        # Label for separator
+        tk.Label(self, text=":", font=('Arial', 20)).grid(row=0, column=1)
+
+        # Spinbox for minutes
+        self.minute_spinbox = ttk.Spinbox(self, from_=0, to=59, wrap=True, textvariable=self.minute_var, format='%02.0f', width=2, font=("Calibri", 12))
+        self.minute_spinbox.grid(row=0, column=2)
+
+    def get_time(self):
+        return f"{self.hour_var.get()}:{self.minute_var.get()}"
+
+
+class DatePickerEntry(tk.Entry):
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.bind('<Button-1>', self.show_calendar)
+        self.calendar = None
+
+    def show_calendar(self, event=None):
+        if self.calendar:
+            return
+
+        self.calendar_win = tk.Toplevel(self)
+        self.calendar_win.wm_overrideredirect(True)
+
+        # Get today's date
+        today = datetime.today()
+
+        # Create a Calendar widget with today's date
+        self.calendar = Calendar(self.calendar_win, selectmode='day',
+                                 year=today.year, month=today.month, day=today.day)
+        self.calendar.pack(padx=10, pady=10)
+        self.calendar.bind("<<CalendarSelected>>", self.on_date_selected)
+        self.position_calendar()
+
+    def on_date_selected(self, event=None):
+        self.insert(0, self.calendar.selection_get())
+        self.calendar_win.destroy()
+        self.calendar = None
+
+    def position_calendar(self):
+        x = self.winfo_rootx()
+        y = self.winfo_rooty() + self.winfo_height()
+        self.calendar_win.geometry(f'+{x}+{y}')
+
+    def insert(self, index, string):
+        # Clear the existing value
+        self.delete(0, tk.END)
+        # Insert the new value
+        super().insert(index, string)

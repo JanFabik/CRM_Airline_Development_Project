@@ -22,7 +22,7 @@ class PassengerUI:
 
         self.passengers_tree = ttk.Treeview(self.tree_frame, show="headings", selectmode="extended")
         self.passengers_tree["columns"] = ("Passenger ID", "First Name", "Last Name", "Email", "Street Number", "Street Name", "City", "ZIP Code", "Country")
-        self.passengers_tree.pack()
+        self.passengers_tree.pack(pady=10)
 
         self.passengers_tree.tag_configure("oddrow", background=settings.saved_secondary_color)  # "#EEF2FF"
         self.passengers_tree.tag_configure("evenrow", background=settings.saved_primary_color)
